@@ -1,0 +1,39 @@
+class Filme {
+  int id;
+  String titulo;
+  String resumo;
+  String atores;
+  String capa;
+  int duracao;
+
+  Filme({
+    required this.id,
+    required this.titulo,
+    required this.resumo,
+    required this.atores,
+    required this.capa,
+    required this.duracao,
+  });
+
+  factory Filme.fromJson(Map<String, dynamic> json) {
+    return Filme(
+      id: json['id'],
+      titulo: json['titulo'],
+      resumo: json['resumo'],
+      atores: json['atores'],
+      capa: json['capa'],
+      duracao: json['duracao'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'titulo': titulo,
+      'resumo': resumo,
+      'atores': atores,
+      'capa': capa,
+      'duracao': duracao,
+    };
+  }
+}
