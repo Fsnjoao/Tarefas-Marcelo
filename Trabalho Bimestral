@@ -1,0 +1,70 @@
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+void main() => runApp(MyApp());
+
+class Despesa {
+  String nome;
+  String descricao;
+  double valor;
+  String data;
+
+  Despesa(this.nome, this.descricao, this.valor, this.data);
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Despesas Agrícolas',
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Despesas Agrícolas'),
+      ),
+      body: DespesaList(),
+    );
+  }
+}
+
+class DespesaList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('despesas').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        }
+
+        var despesas = snapshot.data.docs
+            .map((doc) => Despesa(
+                  doc['nome'],
+                  doc['descricao'],
+                  doc['valor'].toDouble(),
+                  doc['data'],
+                ))
+            .toList();
+
+        return ListView.builder(
+          itemCount: despesas.length,
+          itemBuilder: (context, index) {
+            var despesa = despesas[index];
+            return ListTile(
+              title: Text(despesa.nome),
+              subtitle: Text('${despesa.descricao}\n${despesa.data}'),
+              trailing: Text('R\$ ${despesa.valor.toStringAsFixed(2)}'),
+            );
+          },
+        );
+      },
+    );
+  }
+}
